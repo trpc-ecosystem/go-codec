@@ -12,7 +12,7 @@ import (
 	"trpc.group/trpc-go/trpc-go/server"
 )
 
-// RegisterInfo grpc 注册时需要的信息
+// RegisterInfo grpc Information required for registration
 type RegisterInfo struct {
 	Metadata    string
 	ServerFunc  interface{}
@@ -21,24 +21,24 @@ type RegisterInfo struct {
 	StreamsInfo map[string]server.StreamDesc
 }
 
-// RegisterMethodsInfo 注册 method 的内容
+// RegisterMethodsInfo Register the content of the method
 type RegisterMethodsInfo struct {
 	Method  server.Method
 	ReqType reflect.Type
 	RspType reflect.Type
 }
 
-// RegisterStreamsInfo 注册 stream 的内容
+// RegisterStreamsInfo Register the content of the stream
 type RegisterStreamsInfo struct {
 	server.StreamDesc
 }
 
 var (
-	// grpcRegisterInfo：记录注册的信息
+	// grpcRegisterInfo: Record the registered information
 	grpcRegisterInfo = make(map[string]*RegisterInfo)
 )
 
-// Register 用于静态注册 grpc service 的所有对外路由，以及返回类型的映射
+// Register All external routes used to statically register grpc service, and the mapping of the return type
 func Register(serviceName string, metadata string, methodInfos []RegisterMethodsInfo) error {
 	registerInfo, ok := grpcRegisterInfo[serviceName]
 	if !ok {
@@ -60,8 +60,8 @@ func Register(serviceName string, metadata string, methodInfos []RegisterMethods
 	return nil
 }
 
-// RegisterStream 注册 grpc stream 描述信息
-// 保留前面 RegisterMethod 方法，后续可以收归到一起
+// RegisterStream Register grpc stream description information
+// Keep the previous RegisterMethod method, which can be collected later
 func RegisterStream(serviceName, metadata string, streamInfos []server.StreamDesc,
 	svr interface{}, handlerType interface{}) error {
 	registerInfo, ok := grpcRegisterInfo[serviceName]

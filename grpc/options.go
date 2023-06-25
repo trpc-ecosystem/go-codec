@@ -9,6 +9,7 @@ package grpc
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"trpc.group/trpc-go/trpc-go/client"
 	"trpc.group/trpc-go/trpc-go/codec"
@@ -23,22 +24,31 @@ var (
 	defaultSelectOptionsSize = 4
 )
 
-// getOptions 获取每次请求所需的参数数据
+// getOptions Get the parameter data required for each request
 func getOptions(msg codec.Msg, opt ...client.Option) (*client.Options, string, error) {
-	// 每次请求构造新的参数数据 保证并发安全
+	// Each request constructs new parameter data to ensure concurrency safety
 	opts := &client.Options{
 		Transport:                transport.DefaultClientTransport,
 		Selector:                 selector.DefaultSelector,
 		CallOptions:              make([]transport.RoundTripOption, 0, defaultCallOptionsSize),
 		SelectOptions:            make([]selector.Option, 0, defaultSelectOptionsSize),
-		SerializationType:        -1, // 初始值 -1，不设置
-		CurrentSerializationType: -1, // 当前 client 的序列化方式，协议里面的序列化方式以 SerializationType 为准，转发代理情况，
-		CurrentCompressType:      -1, // 当前 client 透传 body 不序列化，但是业务协议后端需要指定序列化方式
+		SerializationType:        -1, // Initial value -1, do not set
+		CurrentSerializationType: -1, // The serialization method of the current client, the serialization method in
+		// the protocol is based on the SerializationType, the forwarding proxy situation.
+		CurrentCompressType: -1, // The current client transparent transmission body is not serialized, but the
+		// backend of the business agreement needs to specify the serialization method.
 	}
-	// 设置服务环境信息
+
+	// Use the servicename (package.service) of the protocol file of the transferred party as the key to obtain the
+	//   relevant configuration.
+	if err := loadClientConfig(opts, msg.CalleeServiceName()); err != nil {
+		return nil, "", err
+	}
+
+	// Set service environment information
 	opts.SelectOptions = append(opts.SelectOptions, getServiceInfoOptions(msg)...)
 
-	// 输入参数为最高优先级 覆盖掉原有数据
+	// The input parameter is the highest priority to overwrite the original data
 	for _, o := range opt {
 		o(opts)
 	}
@@ -49,19 +59,43 @@ func getOptions(msg codec.Msg, opt ...client.Option) (*client.Options, string, e
 	return opts, address, nil
 }
 
+func loadClientConfig(opts *client.Options, key string) error {
+	cfg := client.Config(key)
+	if cfg.Timeout > 0 {
+		opts.Timeout = time.Duration(cfg.Timeout) * time.Millisecond
+	}
+	if cfg.Serialization != nil {
+		opts.SerializationType = *cfg.Serialization
+	}
+
+	if cfg.Network != "" {
+		opts.Network = cfg.Network
+		opts.CallOptions = append(opts.CallOptions, transport.WithDialNetwork(cfg.Network))
+	}
+	if cfg.Password != "" {
+		opts.CallOptions = append(opts.CallOptions, transport.WithDialPassword(cfg.Password))
+	}
+	if cfg.CACert != "" {
+		opts.CallOptions = append(opts.CallOptions,
+			transport.WithDialTLS(cfg.TLSCert, cfg.TLSKey, cfg.CACert, cfg.TLSServerName))
+	}
+	return nil
+}
+
 func setNamingInfo(opts *client.Options) (string, error) {
-	// 默认使用名字服务 servicename 获取地址，如果有指定 target，则由指定的值来获取
+	// By default, the name service servicename is used to obtain the address. If there is a specified target,
+	//   the specified value will be used to obtain the address.
 	if opts.Target == "" {
 		return "", nil
 	}
-	// Target 的格式为：selector://endpoint
+	// The format of Target is: selector://endpoint
 	substr := "://"
 	index := strings.Index(opts.Target, substr)
 	if index == -1 {
 		return "", errs.NewFrameError(errs.RetClientRouteErr, fmt.Sprintf("client: target %s schema invalid", opts.Target))
 	}
 	opts.Selector = selector.Get(opts.Target[:index])
-	// 检查 selector 是否为空
+	// Check if selector is empty
 	if opts.Selector == nil {
 		return "", errs.NewFrameError(errs.RetClientRouteErr, fmt.Sprintf("client: selector %s not exist",
 			opts.Target[:index]))
@@ -70,27 +104,27 @@ func setNamingInfo(opts *client.Options) (string, error) {
 	return address, nil
 }
 
-// selectNode 根据设置的寻址选择器寻址到后端节点，并设置 msg
+// selectNode Address to the backend node according to the address selector set, and set msg
 func selectNode(msg codec.Msg, opts *client.Options, address string) (*registry.Node, error) {
 	node, err := getNode(address, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	// 通过注册中心返回的节点配置信息更新设置参数
+	// Update the setting parameters through the node configuration information returned by the registration center.
 	opts.LoadNodeConfig(node)
 	msg.WithCalleeContainerName(node.ContainerName)
 	msg.WithCalleeSetName(node.SetName)
 
 	if len(msg.EnvTransfer()) > 0 {
-		// 优先使用上游的透传环境信息
+		// Prioritize the use of upstream transparent transmission environment information
 		msg.WithEnvTransfer(msg.EnvTransfer())
 	} else {
-		// 上游没有透传则使用本环境信息
+		// If there is no transparent transmission upstream, use this environment information
 		msg.WithEnvTransfer(node.EnvKey)
 	}
 
-	// 禁用服务路由则清空环境信息
+	// Disable the service route to clear the environment information
 	if opts.DisableServiceRouter {
 		if len(msg.EnvTransfer()) > 0 {
 			msg.WithEnvTransfer("")
@@ -100,7 +134,7 @@ func selectNode(msg codec.Msg, opts *client.Options, address string) (*registry.
 }
 
 func getNode(address string, opts *client.Options) (*registry.Node, error) {
-	// 获取 ipport 请求地址
+	// Get ipport request address
 	node, err := opts.Selector.Select(address, opts.SelectOptions...)
 	if err != nil {
 		return nil, errs.NewFrameError(errs.RetClientRouteErr, "client Select: "+err.Error())
@@ -111,21 +145,23 @@ func getNode(address string, opts *client.Options) (*registry.Node, error) {
 	return node, nil
 }
 
-// updateMsg 更新客户端请求 Msg 上下文信息
+// updateMsg Update client request Msg context information
 func updateMsg(msg codec.Msg, opts *client.Options) {
-	// 设置被调方 service name 一般 service name 和 proto 协议的 package.service 一致，但是用户可以通过参数修改
+	// Set the service name of the called party. Generally, the service name is consistent with the package.service
+	//   of the proto protocol, but the user can modify it through parameters.
 	if len(opts.ServiceName) > 0 {
-		msg.WithCalleeServiceName(opts.ServiceName) // 以 client 角度看，caller 是自身，callee 是下游
+		msg.WithCalleeServiceName(opts.ServiceName) // From the perspective of the client, the caller is itself,
+		//   and the callee is the downstream.
 	}
 
 	if len(opts.CalleeMethod) > 0 {
 		msg.WithCalleeMethod(opts.CalleeMethod)
 	}
 
-	// 设置后端透传参数
+	// Set backend transparent transmission parameters
 	msg.WithClientMetaData(getMetaData(msg, opts))
 
-	// 以 client 作为小工具时，没有 caller，需要自己通过 client option 设置进来
+	// When the client is used as a small tool, there is no caller, and you need to set it through the client option.
 	if len(opts.CallerServiceName) > 0 {
 		msg.WithCallerServiceName(opts.CallerServiceName)
 	}
@@ -136,11 +172,11 @@ func updateMsg(msg codec.Msg, opts *client.Options) {
 		msg.WithCompressType(opts.CompressType)
 	}
 
-	// 用户设置 reqhead，希望使用自己的请求包头
+	// The user sets reqhead and wants to use his own request header
 	if opts.ReqHead != nil {
 		msg.WithClientReqHead(opts.ReqHead)
 	}
-	// 用户设置 rsphead，希望回传后端的响应包头
+	// The user sets rsphead and hopes to return the response header of the backend
 	if opts.RspHead != nil {
 		msg.WithClientRspHead(opts.RspHead)
 	}
@@ -148,7 +184,7 @@ func updateMsg(msg codec.Msg, opts *client.Options) {
 	msg.WithCallType(opts.CallType)
 }
 
-// getServiceInfoOptions 设置服务环境信息
+// getServiceInfoOptions Set service environment information
 func getServiceInfoOptions(msg codec.Msg) []selector.Option {
 	if len(msg.Namespace()) > 0 {
 		return []selector.Option{
@@ -162,7 +198,7 @@ func getServiceInfoOptions(msg codec.Msg) []selector.Option {
 	return nil
 }
 
-// getMetaData 获取后端透传参数
+// getMetaData Obtain backend transparent transmission parameters
 func getMetaData(msg codec.Msg, opts *client.Options) codec.MetaData {
 	md := msg.ClientMetaData()
 	if md == nil {

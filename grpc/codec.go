@@ -16,40 +16,40 @@ type contextHeader struct{}
 var ContextKeyHeader = &contextHeader{}
 
 var (
-	// DefaultServerCodec 默认编解码实例
+	// DefaultServerCodec Default codec instance
 	DefaultServerCodec = &ServerCodec{}
-	// DefaultClientCodec 默认的客户端编解码器
+	// DefaultClientCodec Default client codec
 	DefaultClientCodec = &ClientCodec{}
 )
 
-// init 注册 grpc codec 与 grpc server transport
+// init Register grpc codec and grpc server transport
 func init() {
 	codec.Register("grpc", DefaultServerCodec, DefaultClientCodec)
 }
 
-// ServerCodec 服务端编解码
+// ServerCodec Server codec
 type ServerCodec struct {
 }
 
-// Decode ServerCodec.Decode 用于解码
+// Decode ServerCodec.Decode for decoding
 func (s *ServerCodec) Decode(msg codec.Msg, reqbuf []byte) (reqbody []byte, err error) {
 	return reqbuf, nil
 }
 
-// Encode ServerCodec.Encode 用于编码
+// Encode ServerCodec.Encode for coding
 func (s *ServerCodec) Encode(msg codec.Msg, reqbuf []byte) (reqbody []byte, err error) {
 	return reqbuf, nil
 }
 
-// ClientCodec 是 grpc 客户端的编解码器，什么都不做
+// ClientCodec is the codec for the grpc client, does nothing
 type ClientCodec struct{}
 
-// Encode 是 grpc 客户端的编码器，什么都不做
+// Encode is the encoder for the grpc client and does nothing
 func (c *ClientCodec) Encode(msg codec.Msg, rspbody []byte) (buffer []byte, err error) {
 	return rspbody, nil
 }
 
-// Decode 是 grpc 客户端的解码器，什么都不做
+// Decode is a decoder for the grpc client, does nothing
 func (c *ClientCodec) Decode(msg codec.Msg, buffer []byte) (rspbody []byte, err error) {
 	return buffer, nil
 }

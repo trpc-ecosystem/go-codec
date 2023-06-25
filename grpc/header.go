@@ -20,7 +20,7 @@ type Header struct {
 	OutMetadata map[string][]string // metadata send to client
 }
 
-// ParseGRPCMetadata trpc-go 服务端调用，来获取客户端的 metadata
+// ParseGRPCMetadata Called by the trpc-go server to obtain the metadata of the client
 func ParseGRPCMetadata(ctx context.Context) map[string][]string {
 	header, ok := ctx.Value(ContextKeyHeader).(*Header)
 	if !ok {
@@ -29,7 +29,7 @@ func ParseGRPCMetadata(ctx context.Context) map[string][]string {
 	return header.InMetadata
 }
 
-// WithServerGRPCMetadata trpc-go 服务端调用，来发送 metadata
+// WithServerGRPCMetadata Called by the trpc-go server to send metadata
 func WithServerGRPCMetadata(ctx context.Context, key string, value []string) {
 	header, ok := ctx.Value(ContextKeyHeader).(*Header)
 	if !ok {
@@ -44,7 +44,7 @@ func WithServerGRPCMetadata(ctx context.Context, key string, value []string) {
 	header.OutMetadata[key] = value
 }
 
-// WithHeader trpc-go 客户端调用，设置发送到服务端的 md，或接受来自服务端的 md
+// WithHeader trpc-go client call, set the md sent to the server, or accept the md from the server
 func WithHeader(ctx context.Context, header *Header) context.Context {
 	return context.WithValue(ctx, ContextKeyHeader, header)
 }

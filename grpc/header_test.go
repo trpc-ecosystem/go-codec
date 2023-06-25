@@ -14,12 +14,12 @@ import (
 )
 
 func TestParseGRPCMetadata(t *testing.T) {
-	// value 不是*Header
+	// value is not *Header
 	ctx := context.WithValue(context.TODO(), ContextKeyHeader, "")
 	parseV := ParseGRPCMetadata(ctx)
 	assert.Nil(t, parseV)
 
-	// 正常 case
+	// normal case
 	inMetadata := map[string][]string{"key": {"1", "2"}}
 	v := &Header{
 		InMetadata: inMetadata,

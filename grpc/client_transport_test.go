@@ -22,13 +22,13 @@ import (
 	"trpc.group/trpc-go/trpc-go/transport"
 )
 
-// FakeGreeterServer 桩服务
+// FakeGreeterServer pile service
 type FakeGreeterServer struct {
 	handler func(ctx context.Context, req *common.HelloReq, rsp *common.HelloRsp) error
 	grpcpb.UnimplementedGreeterServer
 }
 
-// Hello 接口
+// Hello interface
 func (f *FakeGreeterServer) Hello(ctx context.Context, req *common.HelloReq) (*common.HelloRsp, error) {
 	rsp := &common.HelloRsp{}
 	err := f.handler(ctx, req, rsp)

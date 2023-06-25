@@ -14,20 +14,20 @@ import (
 	"trpc.group/trpc-go/trpc-go/errs"
 )
 
-// pool 实现了简单的 grpc 连接池
+// pool Implemented a simple grpc connection pool
 type pool struct {
 	connections sync.Map
 }
 
-// Get 从连接池中获取一个可用的 grpc 客户端连接
+// Get Obtain an available grpc client connection from the connection pool
 func (p *pool) Get(address string, timeout time.Duration) (*grpc.ClientConn, error) {
-	// TODO 索引连接池时考虑超时时间
+	// TODO Consider timeouts when indexing connection pools
 	if v, ok := p.connections.Load(address); ok {
 		return v.(*grpc.ClientConn), nil
 	}
 
 	conn, err := grpc.Dial(address,
-		grpc.WithInsecure(), // TODO 从 ctx 中获取证书相关配置，支持 tls 通讯
+		grpc.WithInsecure(), // TODO Obtain certificate related configuration from ctx, support tls communication
 		grpc.WithTimeout(timeout))
 	if err != nil {
 		return nil, errs.NewFrameError(errs.RetClientConnectFail, err.Error())

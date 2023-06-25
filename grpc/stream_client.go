@@ -16,37 +16,37 @@ import (
 	"trpc.group/trpc-go/trpc-go/transport"
 )
 
-// DefaultStreamClient 生成新的 StreamClient
+// DefaultStreamClient Generate a new StreamClient
 var DefaultStreamClient = NewStreamClient()
 
-// NewStreamClient  生成新的 StreamClient
+// NewStreamClient  Generate a new StreamClient
 func NewStreamClient() stream.Client {
 	return &StreamClient{}
 }
 
-// StreamClient grpc.Stream 客户端的实现
+// StreamClient grpc.Stream client implementation
 type StreamClient struct {
 	connectionPool pool
 }
 
-// NewStream 生成 streamConn 并存储
+// NewStream Generate streamConn and store
 func (s *StreamClient) NewStream(ctx context.Context, desc *client.ClientStreamDesc, method string,
 	opt ...client.Option) (client.ClientStream, error) {
 	cs := &clientStream{}
 	cs.ctx = ctx
 	msg := codec.Message(ctx)
-	// 读取配置参数，设置用户输入参数
+	// Read configuration parameters, set user input parameters
 	opts, address, err := getOptions(msg, opt...)
 	if err != nil {
 		return nil, err
 	}
-	// 根据寻址选择器寻址到后端节点 node
+	// Address to the backend node node according to the address selector
 	if _, err = selectNode(msg, opts, address); err != nil {
 		return nil, err
 	}
 	updateMsg(msg, opts)
 	roundTripOpts := &transport.RoundTripOptions{}
-	// 将传入的 call option 写到 opts 字段中
+	// Write the incoming call option into the opts field
 	for _, o := range opts.CallOptions {
 		o(roundTripOpts)
 	}
@@ -69,23 +69,23 @@ type clientStream struct {
 	stream grpc.ClientStream
 }
 
-// RecvMsg 接收消息，返回 error
+// RecvMsg Receive message and return error
 func (cs *clientStream) RecvMsg(m interface{}) error {
 	return cs.stream.RecvMsg(m)
 }
 
-// SendMsg  接收消息，返回 error
+// SendMsg Receive message and return error
 func (cs *clientStream) SendMsg(m interface{}) error {
 	return cs.stream.SendMsg(m)
 
 }
 
-// CloseSend 关闭发送那端，返回 error
+// CloseSend Close the sending end and return error
 func (cs *clientStream) CloseSend() error {
 	return cs.stream.CloseSend()
 }
 
-// Context 返回 Context
+// Context Return to Context
 func (cs *clientStream) Context() context.Context {
 	return cs.ctx
 }

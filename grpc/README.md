@@ -1,34 +1,35 @@
-# tRPC-Go grpc 协议
-tRPC-Go 框架通过包引入和 grpc server 的封装，来达到支持 grpc 协议的目的。它通过 grpc server transport 和编解码来支持 grpc server 处理 grpc client 的请求。
+# tRPC-Go grpc protocol
+[![BK Pipelines Status](https://api.bkdevops.qq.com/process/api/external/pipelines/projects/pcgtrpcproject/p-2c6a43f325d54e78a029f16198847db3/badge?X-DEVOPS-PROJECT-ID=pcgtrpcproject)](http://devops.oa.com:/ms/process/api-html/user/builds/projects/pcgtrpcproject/pipelines/p-2c6a43f325d54e78a029f16198847db3/latestFinished?X-DEVOPS-PROJECT-ID=pcgtrpcproject)  [![Coverage](https://tcoverage.woa.com/api/getCoverage/getTotalImg/?pipeline_id=p-2c6a43f325d54e78a029f16198847db3)](http://macaron.oa.com/api/coverage/getTotalLink/?pipeline_id=p-2c6a43f325d54e78a029f16198847db3) [![GoDoc](https://img.shields.io/badge/API%20Docs-GoDoc-green)](http://godoc.oa.com/git.code.oa.com/trpc-go/trpc-codec/grpc) 
+The tRPC-Go framework achieves the purpose of supporting the grpc protocol through package introduction and grpc server encapsulation. It supports grpc server to process grpc client requests through grpc server transport and codec.
 
 
-## 快速开始
+## Quick start
 
-以下是通过示例 demo 的创建，演示使用流程。
+The following is the creation of a sample demo to demonstrate the usage process.
 
-假设我们现在的业务项目 app 是 **test**，我们要开发的服务 server 是 **hellogrpc**。
+Suppose our current business project app is **test**, and the service server we want to develop is **hellogrpc**.
 
-使用的 git 工程是 `http://trpc.group/trpc-go/trpc-codec.git`，并将本示例放置在该工程下的 `grpc/examples` 路径下。
+The git project used is `http://git.woa.com/trpc-go/trpc-codec.git`, and this example is placed under the `grpc/examples` path under the project.
 
-大家在操作的过程中，可以设置自己的 app 以及 server 名，但需要再后续步骤中，注意相应字段的替换。
+During the operation, you can set your own app and server name, but you need to pay attention to the replacement of the corresponding fields in the subsequent steps.
 
-#### 准备工作
+#### Preparation
 
-1. 具备 golang 编译环境（golang 1.11 以上版本）的环境。
-4. [安装 trpc 工具](https://trpc.group/trpc-go/trpc-go-cmdline)
-5. [安装 grpc_cli 工具](https://grpc.github.io/grpc/core/md_doc_command_line_tool.html)
+1. An environment with a golang compilation environment (golang 1.11 or later).
+4. [Install trpc tool](https://git.woa.com/trpc-go/trpc-go-cmdline)
+5. [Install grpc_cli tool](https://grpc.github.io/grpc/core/md_doc_command_line_tool.html)
 
-#### 开始
+#### Start
 
-1. clone 工程：`git clone "http://trpc.group/trpc-go/trpc-codec.git"`
+1. clone project: `git clone "http://git.woa.com/trpc-go/trpc-codec.git"`
 
 2. `cd trpc-codec/grpc/examples`
 
 3. `mkdir hellogrpc && cd hellogrpc && mkdir protocol`
 
-4. 初始化 golang mod：`go mod init trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc`
+4.  init golang mod：`go mod init git.code.oa.com/trpc-go/trpc-codec/grpc/examples/hellogrpc`
 
-5. 在 protocol 路径下，编写服务协议文件 `vim protocol/hellogrpc.proto`：
+5. On the protocol path, write the service agreement file `vim protocol/hellogrpc.proto`：
 
 ```proto
 syntax = "proto3";  
@@ -51,21 +52,21 @@ service Greeter {
 }
 ```
 
-    > **注意 proto 中的 package 以及 go_package 的定义。**
+    > **Pay attention to the definition of package and go_package in proto, for details, please refer to [tRPC-Go Code of Conduct](https://iwiki.oa.tencent.com/pages/viewpage.action?pageId=99485634). **
 
-6. 通过命令行生成服务模型：`trpc create --protocol=grpc --protofile=protocol/hellogrpc.proto --output .`。
-！！！注意：请使用 v0.3.17 及以后版本的 trpc 命令行工具，以开启 grpc 协议支持，若要使用 trpc 库实现 grpc 客户端，请使用 v0.4.1 及以后版本的 trpc 命令行工具。
-7. 为了方便测试，替换远程协议成本地 `go mod edit -replace=trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol=./stub/trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol`
+6. Generate a serving model via the command line: `trpc create --protocol=grpc --protofile=protocol/hellogrpc.proto --output .`.
+！！！Note: Please use the trpc command line tool of v0.3.17 and later versions to enable grpc protocol support. If you want to use the trpc library to implement the grpc client, please use the trpc command line tool of v0.4.1 and later versions.
+7. In order to facilitate testing, replace the remote protocol with local `go mod edit -replace=git.code.oa.com/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol=./stub/git.code.oa.com/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol`
 
-8. 编写业务逻辑：
+8. Write business logic:
 
-    - 修改 `main.go`，添加 `trpc-grpc` package，并且在 main 函数中注册：
+    - Modify `main.go`, add `trpc-grpc` package, and register in the main function:
 
-      > 后续会修改成 trpc 工具直接支持，暂时需要手动引入和注册
+      > It will be modified to be directly supported by the trpc tool in the future, and it needs to be manually introduced and registered for the time being
 
       ```
-      //引入库文件
-      import "trpc.group/trpc-go/trpc-codec/grpc"
+      // Import library files
+      import "git.code.oa.com/trpc-go/trpc-codec/grpc"
       ...
       func main() {
       
@@ -77,7 +78,7 @@ service Greeter {
       }
       ```
       
-    - 修改 service 接口 `greeter.go` 文件，形如：
+    - Modify the `greeter.go` file of the service interface, as follows:
 
       ```
       // Package main is the main package.
@@ -92,7 +93,7 @@ service Greeter {
       // SayHello ...
       func (s *greeterServiceImpl) SayHello(ctx context.Context, req *pb.HelloRequest, rsp *pb.HelloReply) error {
       	// implement business logic here ...
-      	// 新增内容
+      	// new content
       	rsp.Msg = "hello grpc client: " + req.Msg
       
       	return nil
@@ -101,40 +102,40 @@ service Greeter {
       // SayHi ...
       func (s *greeterServiceImpl) SayHi(ctx context.Context, req *pb.HelloRequest, rsp *pb.HelloReply) error {
       	// implement business logic here ...
-      	// 新增内容
+      	// new content
       	rsp.Msg = "hi grpc client: " + req.Msg
       
       	return nil
       }
       ```
 
-9. 编译：`go build`，将会生成 `hellogrpc` 的可执行文件。
+9. Compile: `go build`, will generate the executable file of `hellogrpc`.
 
-10. 修改当前路径下的启动配置 `trpc_go.yaml` 文件中的 `service` 下的 protocol 字段，从 `trpc` 修改为 `grpc`：
+10. Modify the protocol field under `service` in the startup configuration `trpc_go.yaml` file under the current path, from `trpc` to `grpc`:
 
   ```
-    service:                                         #业务服务提供的 service，可以有多个
-        - name: trpc.test.hellogrpc.Greeter      #service 的路由名称
-          ip: 127.0.0.1                            #服务监听 ip 地址 可使用占位符 ${ip},ip 和 nic 二选一，优先 ip
+    service:                                     # The service provided by the business service can have multiple
+        - name: trpc.test.hellogrpc.Greeter      # service route name
+          ip: 127.0.0.1                          # The service listens to the ip address. You can use the placeholder ${ip}, choose one of ip and nic, and give priority to ip
           #nic: eth0
-          port: 8000                #服务监听端口 可使用占位符 ${port}
-          network: tcp                             #网络监听类型  tcp udp
-          protocol: grpc               #修改为 grpc
-          timeout: 1000                            #请求最长处理时间 单位 毫秒
+          port: 8000                             # Service listening port can use placeholder ${port}
+          network: tcp                           # Network monitoring type tcp/udp
+          protocol: grpc                         # Change to grpc
+          timeout: 1000                          # Request maximum processing time, at milliseconds
   ```
 
-11. 启动服务：`./hellogrpc &`
+11. Start the service: `./hellogrpc &`
 
-12. 使用 grpc-cli 执行测试：
+12. Execute tests with grpc-cli:
 
     ```
-    # 查看服务
+    # view service
     $ grpc_cli ls localhost:8000
     grpc.reflection.v1alpha.ServerReflection
     trpc.test.hellogrpc.Greeter
     ```
     ```
-    # 查看 Greeter 服务的详细信息
+    # View details of the Greeter service
     $ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter -l
     filename: hellogrpc.proto
     package: trpc.test.hellogrpc;
@@ -144,36 +145,36 @@ service Greeter {
     }
     ```
     ```
-    # 查看 Greeter.SayHi 方法的详细信息
+    # See the details of the Greeter.SayHi method
     $ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter.SayHi -l
     rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
     ```
     ```
-    # 调试 Greeter.SayHi 接口
+    # Debug Greeter.SayHi interface
     $ grpc_cli call localhost:8000 'trpc.test.hellogrpc.Greeter.SayHi' "msg: 'I am a test.'"
     msg: "hi grpc client: I am a test."
     Rpc succeeded with OK status
     ```
 
-13. 编写客户端代码
-使用 grpc-go 生成的客户端代码。
+13. Write client code
+Client code generated using grpc-go.
 ```
-# 生成grpc-go的客户端代码
+# Generate client code for grpc-go
 $ protoc --go_out=plugins=grpc:. protocol/hellogrpc.proto
 ```
-也可以使用 trpc 编写客户端代码，请使用 v0.4.1 及以上 trpc-go-cmdline 生成客户端桩代码，参考 example/client/tgrpc 实现客户端。
+You can also use trpc to write client code, please use v0.4.1 and above trpc-go-cmdline to generate client stub code, refer to example/client/tgrpc to implement the client.
 
 
-14.使用 grpc—stream 方式
-详见 example
+14. Use the grpc-stream method
+See example for details
 
-## 问题说明
+## Problem statement
 
 
-## 相关参考
+## Related References
 
 [grpc protocol](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md)
 [http2 frame](https://http2.github.io/http2-spec/#FramingLayer)
-[grpc 协议解包过程全剖析](https://zhuanlan.zhihu.com/p/86075992)
-[grpc 协议编解码实现](https://zhuanlan.zhihu.com/p/85176945)
+[Full analysis of grpc protocol unpacking process](https://zhuanlan.zhihu.com/p/86075992)
+[grpc protocol codec implementation](https://zhuanlan.zhihu.com/p/85176945)
 

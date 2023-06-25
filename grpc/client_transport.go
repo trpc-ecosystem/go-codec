@@ -21,20 +21,22 @@ func init() {
 	transport.RegisterClientTransport("grpc", DefaultClientTransport)
 }
 
-// DefaultClientTransport 默认的客户端通讯层
+// DefaultClientTransport default client communication layer
 var DefaultClientTransport = &clientTransport{}
 
-// clientTransport 实现了 trpc-go 的 transport.ClientTransport 接口，使用原生 grpc 通讯层替代 trpc-go 通讯层
+// clientTransport Implemented the transport.ClientTransport interface of trpc-go, using the native grpc communication
+//
+//	layer instead of the trpc-go communication layer.
 type clientTransport struct {
 	connectionPool pool
 	streamClient   grpc.ClientStream
 	streamDesc     *RegisterStreamsInfo
 }
 
-// RoundTrip 是实现 transport.ClientTransport 的方法，调用原生 grpc 客户端代码
+// RoundTrip It is a method to implement transport.ClientTransport, calling the native grpc client code.
 func (c *clientTransport) RoundTrip(ctx context.Context, req []byte,
 	roundTripOpts ...transport.RoundTripOption) (rsp []byte, err error) {
-	// 从 ctx 中获取 grpc Header，用来获取请求和设置响应
+	// Get the grpc Header from ctx to get the request and set the response
 	header, ok := ctx.Value(ContextKeyHeader).(*Header)
 	if !ok {
 		return nil, errs.NewFrameError(errs.RetClientValidateFail,
@@ -42,53 +44,53 @@ func (c *clientTransport) RoundTrip(ctx context.Context, req []byte,
 	}
 	reqbody := header.Req
 	rspbody := header.Rsp
-	// 默认值
+	// Defaults
 	opts := &transport.RoundTripOptions{}
 
-	// 将传入的 func option 写到 opts 字段中
+	// Write the incoming func option into the opts field
 	for _, o := range roundTripOpts {
 		o(opts)
 	}
 
 	msg := codec.Message(ctx)
-	// 获取超时设置
+	// Get timeout settings
 	timeout := msg.RequestTimeout()
-	// 从 ctx 中获取 metadata 并调用 grpc 方法设置客户端 metadata
+	// Get metadata from ctx and call grpc method to set client metadata
 	ctx, err = setGRPCMetadata(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
 
-	// 从服务器获取 metadata
+	// Get metadata from the server
 	md := &metadata.MD{}
 	var callOpts []grpc.CallOption
 	callOpts = append(callOpts, grpc.Header(md))
 
-	// 从连接池获取 grpc 连接
+	// Get a grpc connection from the connection pool
 	conn, err := c.connectionPool.Get(opts.Address, timeout)
 	if err != nil {
 		return nil, errs.NewFrameError(errs.RetClientConnectFail, err.Error())
 	}
-	// 使用 grpc 客户端调用远端服务器方法
+	// Use the grpc client to call the remote server method
 	if err = conn.Invoke(ctx, msg.ClientRPCName(),
 		reqbody, rspbody, callOpts...); err != nil {
 		return nil, fmt.Errorf("grpc invoke failed. err: %v", err)
 	}
 
-	// 将服务器的 metadata 写入 ctx，使上层能够获取
+	// Write the metadata of the server to ctx, so that the upper layer can obtain
 	header.InMetadata = *md
 
 	return nil, nil
 }
 
-// setGRPCMetadata 将 grpc 的 Header 信息塞入到 metadata 中
+// setGRPCMetadata Insert grpc Header information into metadata
 func setGRPCMetadata(ctx context.Context, msg codec.Msg) (context.Context, error) {
 	header, ok := ctx.Value(ContextKeyHeader).(*Header)
 	if !ok {
 		return nil, errs.NewFrameError(errs.RetClientValidateFail,
 			fmt.Sprintf("grpc header disappeared when set md, code error"))
 	}
-	// 将 grpc md 设置到 ctx，供发送端使用
+	// Set grpc md to ctx for use by the sender
 	var kv []string
 	for k, vals := range header.OutMetadata {
 		for _, v := range vals {

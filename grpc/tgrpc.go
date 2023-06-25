@@ -33,8 +33,13 @@ type GrpcToTrpcLayer struct {
 	Handler transport.Handler
 }
 
-// Handle req 和 resp 通过 ctx 传入 trpc-go，在生成的 stub 里从 ctx 获取 req 和写入 resp，无需反复序列化
-// 从 GrpcRegisterInfoMap 获取方法输入输出类型仍不可缺少，如果可以将这块代码放到 stub 里，则不需要记录输入输出类型
+// Handle req and resp are passed to trpc-go through ctx, and req is obtained from ctx and written to resp in the
+//
+//	generated stub without repeated serialization.
+//
+// Obtaining the input and output types of the method from GrpcRegisterInfoMap is still indispensable. If this piece
+//
+//	of code can be placed in the stub, there is no need to record the input and output types.
 func (g *GrpcToTrpcLayer) Handle(srv interface{}, ctx context.Context, dec func(interface{}) error,
 	_ grpc.UnaryServerInterceptor) (out interface{}, err error) {
 	method, _ := grpc.Method(ctx)
@@ -49,7 +54,7 @@ func (g *GrpcToTrpcLayer) Handle(srv interface{}, ctx context.Context, dec func(
 
 	index := strings.LastIndex(method, "/")
 	if index < 0 {
-		return nil, fmt.Errorf("GrpcToTrpcLayer：method: `%s` format error. ", method)
+		return nil, fmt.Errorf("GrpcToTrpcLayer: method: `%s` format error. ", method)
 	}
 
 	serviceName := method[1:index]
@@ -100,7 +105,7 @@ func (g *GrpcToTrpcLayer) Handle(srv interface{}, ctx context.Context, dec func(
 	return grpcData.Rsp, nil
 }
 
-// StreamHandler 封装 trpc.Handler 为 grpcHandler
+// StreamHandler Encapsulate trpc.Handler as grpcHandler
 func StreamHandler(srv interface{}, s grpc.ServerStream) error {
 	ctx := s.Context()
 	method, _ := grpc.Method(ctx)
@@ -130,7 +135,7 @@ func StreamHandler(srv interface{}, s grpc.ServerStream) error {
 	return desc.Handler(srv, s)
 }
 
-// makeGrpcDesc 将 stream.ClientStreamDesc 映射为 grpc.StreamDesc
+// makeGrpcDesc maps stream.ClientStreamDesc to grpc.StreamDesc
 func makeGrpcDesc(desc *client.ClientStreamDesc) *grpc.StreamDesc {
 	grpcDesc := &grpc.StreamDesc{
 		StreamName:    desc.StreamName,

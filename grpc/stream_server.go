@@ -23,15 +23,15 @@ func init() {
 // DefaultServerStreamTransport default server stream transport
 var DefaultServerStreamTransport = NewServerStreamTransport()
 
-// ServerStreamTransport 传输层
+// ServerStreamTransport transport layer
 type ServerStreamTransport struct {
 	opts *transport.ServerTransportOptions
 }
 
-// NewServerStreamTransport 创建 grpc_stream  transport
+// NewServerStreamTransport Create grpc_stream transport
 func NewServerStreamTransport(opt ...transport.ServerTransportOption) transport.ServerStreamTransport {
 	opts := &transport.ServerTransportOptions{}
-	// 将传入的 func option 写到 opts 字段中
+	// Write the incoming func option into the opts field
 	for _, o := range opt {
 		o(opts)
 	}
@@ -43,7 +43,7 @@ func NewServerStreamTransport(opt ...transport.ServerTransportOption) transport.
 	return s
 }
 
-// ListenAndServe 启动 grpc 监听
+// ListenAndServe Start grpc monitoring
 func (t *ServerStreamTransport) ListenAndServe(ctx context.Context, opt ...transport.ListenServeOption) error {
 	opts := &transport.ListenServeOptions{
 		Network: "tcp",
@@ -67,17 +67,17 @@ func (t *ServerStreamTransport) ListenAndServe(ctx context.Context, opt ...trans
 	return nil
 }
 
-// Send 执行发送逻辑，此处下层被 grpcShtreamHandle 接住，Send 未用到
+// Send Execute the sending logic, where the lower layer is caught by grpcShtreamHandle, and Send is not used
 func (t *ServerStreamTransport) Send(ctx context.Context, req []byte) error {
 	return nil
 }
 
-// Close 服务端异常时候调用 Close 进行现场清理
+// Close When the server is abnormal, call Close to clean up the scene
 func (t *ServerStreamTransport) Close(ctx context.Context) {
 	return
 }
 
-// registerServices 注册 server 信息到 grpc.Server
+// registerServices Register server information to grpc.Server
 func registerServices(s *grpc.Server, registerInfo map[string]*RegisterInfo, handler transport.Handler) {
 	var serveFuncIn = &GrpcToTrpcLayer{
 		Handler: handler,

@@ -92,7 +92,7 @@ func TestGrpcToTrpcLayerHandle(t *testing.T) {
 		},
 		nil,
 	)
-	assert.Equal(t, err, errors.New("GrpcToTrpcLayer: method: `` format error. "))
+	assert.Equal(t, err.Error(), "GrpcToTrpcLayer: method: `` format error. ")
 
 	peer.NewContext(ctx, &peer.Peer{})
 	metadata.NewIncomingContext(ctx, metadata.New(map[string]string{"key": "value"}))
@@ -100,7 +100,7 @@ func TestGrpcToTrpcLayerHandle(t *testing.T) {
 
 }
 
-// STS STS 桩结构体
+// STS pile structure
 type STS struct {
 }
 
@@ -124,16 +124,16 @@ func (s *STS) SetTrailer(md metadata.MD) error {
 	return nil
 }
 
-// Addr 地址
+// Addr Address
 type Addr struct {
 }
 
-// String 字符串
+// String String
 func (a *Addr) String() string {
 	return "addr"
 }
 
-// Network 地址
+// Network Address
 func (a *Addr) Network() string {
 	return ""
 }

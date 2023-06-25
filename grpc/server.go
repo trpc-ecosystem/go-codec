@@ -20,19 +20,19 @@ func init() {
 	transport.RegisterServerTransport("grpc", DefaultServerTransport)
 }
 
-// DefaultServerTransport : 构建并封装 grpc server transport 实例
+// DefaultServerTransport : Construct and encapsulate the grpc server transport instance
 var DefaultServerTransport = NewServerTransport(transport.WithReusePort(true))
 
-// ServerTransport 传输层
+// ServerTransport transport layer
 type ServerTransport struct {
 	opts *transport.ServerTransportOptions
 }
 
-// NewServerTransport 创建 transport
+// NewServerTransport create transport
 func NewServerTransport(opt ...transport.ServerTransportOption) transport.ServerTransport {
 	opts := &transport.ServerTransportOptions{}
 
-	// 将传入的 func option 写到 opts 字段中
+	// Write the incoming func option into the opts field
 	for _, o := range opt {
 		o(opts)
 	}
@@ -44,7 +44,7 @@ func NewServerTransport(opt ...transport.ServerTransportOption) transport.Server
 	return s
 }
 
-// ListenAndServe 处理配置
+// ListenAndServe process configuration
 func (t *ServerTransport) ListenAndServe(ctx context.Context, opt ...transport.ListenServeOption) error {
 	opts := &transport.ListenServeOptions{
 		Network: "tcp",
@@ -65,7 +65,7 @@ func (t *ServerTransport) ListenAndServe(ctx context.Context, opt ...transport.L
 	}
 
 	s := grpc.NewServer()
-	// 把所有的 grpc server 路由全部通过 GrpcToTrpcer 统一处理，并转发给 trpc-go 框架处理
+	// Process all grpc server routes through GrpcToTrpcer and forward them to the trpc-go framework for processing
 	var methodDesc []grpc.MethodDesc
 	for serviceName, serviceInfo := range grpcRegisterInfo {
 		for methodName := range serviceInfo.MethodsInfo {
