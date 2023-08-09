@@ -1,0 +1,16 @@
+global:
+  namespace: Development
+  env_name: test
+
+server:
+  app: app
+  server: server
+  filter:
+  service:
+    - name: node
+      ip: 127.0.0.1
+      port: 5051
+      network: tcp
+      protocol: grpc
+      timeout: 1000
+ 
