@@ -1,0 +1,29 @@
+server:  # Server configuration.
+  service:  # The service provided by the business service can have multiple.
+    - name: trpc.rawstring.helloworld.hellorawstring  # Service route name.
+      ip: 127.0.0.1  # The ip address that the service monitors, you can use the placeholder ${ip}, choose one of ip and nic, and give priority to ip.
+      port: 8000  # Service listening port, placeholder ${port} can be used.
+      network: tcp  # Network monitoring type, tcp or udp.
+      protocol: rawstring  # Application layer protocol, trpc or http.
+      timeout: 1000  # The maximum processing time of the request, in milliseconds.
+      idletime: 300000  # Connection idle time, in milliseconds.
+    - name: trpc.rawstring.helloworld.hellorawstring1  # Service route name.
+      ip: 127.0.0.1  # The ip address that the service monitors, you can use the placeholder ${ip}, choose one of ip and nic, and give priority to ip.
+      port: 8001  # Service listening port, placeholder ${port} can be used.
+      network: tcp  # Network monitoring type, tcp or udp.
+      protocol: rawstring  # Application layer protocol, trpc or http.
+      timeout: 1000  # The maximum request processing time, in milliseconds.
+      idletime: 300000  # Connection idle time, in milliseconds.
+plugins:  # Plugin configuration.
+  log:  # Log configuration.
+    default:  # The configuration of the default log can support multiple outputs.
+      - writer: console  # Console stdout default.
+        level: debug  # The level of standard output logging.
+      - writer: file  # Local file log.
+        level: info  # The level of the local file rollover log.
+        writer_config:
+          filename: ./trpc.log  # The path where the local file rolling log is stored.
+          max_size: 10  # The size of the local file rolling log, in MB.
+          max_backups: 10  # Maximum number of log files.
+          max_age: 7  # Maximum number of days to keep logs.
+          compress:  false  # Whether the log file is compressed.
