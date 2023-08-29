@@ -22,7 +22,7 @@ var (
 	DefaultClientCodec = &ClientCodec{}
 )
 
-// init 注册grpc codec与grpc server transport
+// init 注册 grpc codec 与 grpc server transport
 func init() {
 	codec.Register("grpc", DefaultServerCodec, DefaultClientCodec)
 }
@@ -41,15 +41,15 @@ func (s *ServerCodec) Encode(msg codec.Msg, reqbuf []byte) (reqbody []byte, err 
 	return reqbuf, nil
 }
 
-// ClientCodec 是grpc客户端的编解码器，什么都不做
+// ClientCodec 是 grpc 客户端的编解码器，什么都不做
 type ClientCodec struct{}
 
-// Encode 是grpc客户端的编码器，什么都不做
+// Encode 是 grpc 客户端的编码器，什么都不做
 func (c *ClientCodec) Encode(msg codec.Msg, rspbody []byte) (buffer []byte, err error) {
 	return rspbody, nil
 }
 
-// Decode 是grpc客户端的解码器，什么都不做
+// Decode 是 grpc 客户端的解码器，什么都不做
 func (c *ClientCodec) Decode(msg codec.Msg, buffer []byte) (rspbody []byte, err error) {
 	return buffer, nil
 }

@@ -1,5 +1,5 @@
-# tRPC-Go grpc协议
-tRPC-Go 框架通过包引入和 grpc server 的封装，来达到支持 grpc 协议的目的。 它通过 grpc server transport 和编解码来支持 grpc server 处理 grpc client 的请求。
+# tRPC-Go grpc 协议
+tRPC-Go 框架通过包引入和 grpc server 的封装，来达到支持 grpc 协议的目的。它通过 grpc server transport 和编解码来支持 grpc server 处理 grpc client 的请求。
 
 
 ## 快速开始
@@ -54,7 +54,7 @@ service Greeter {
     > **注意 proto 中的 package 以及 go_package 的定义。**
 
 6. 通过命令行生成服务模型：`trpc create --protocol=grpc --protofile=protocol/hellogrpc.proto --output .`。
-！！！注意：请使用v0.3.17及以后版本的trpc命令行工具，以开启grpc协议支持，若要使用trpc库实现grpc客户端，请使用v0.4.1及以后版本的trpc命令行工具。
+！！！注意：请使用 v0.3.17 及以后版本的 trpc 命令行工具，以开启 grpc 协议支持，若要使用 trpc 库实现 grpc 客户端，请使用 v0.4.1 及以后版本的 trpc 命令行工具。
 7. 为了方便测试，替换远程协议成本地 `go mod edit -replace=trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol=./stub/trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol`
 
 8. 编写业务逻辑：
@@ -113,9 +113,9 @@ service Greeter {
 10. 修改当前路径下的启动配置 `trpc_go.yaml` 文件中的 `service` 下的 protocol 字段，从 `trpc` 修改为 `grpc`：
 
   ```
-    service:                                         #业务服务提供的service，可以有多个
-        - name: trpc.test.hellogrpc.Greeter      #service的路由名称
-          ip: 127.0.0.1                            #服务监听ip地址 可使用占位符 ${ip},ip和nic二选一，优先ip
+    service:                                         #业务服务提供的 service，可以有多个
+        - name: trpc.test.hellogrpc.Greeter      #service 的路由名称
+          ip: 127.0.0.1                            #服务监听 ip 地址 可使用占位符 ${ip},ip 和 nic 二选一，优先 ip
           #nic: eth0
           port: 8000                #服务监听端口 可使用占位符 ${port}
           network: tcp                             #网络监听类型  tcp udp
@@ -156,16 +156,16 @@ service Greeter {
     ```
 
 13. 编写客户端代码
-使用grpc-go生成的客户端代码。
+使用 grpc-go 生成的客户端代码。
 ```
 # 生成grpc-go的客户端代码
 $ protoc --go_out=plugins=grpc:. protocol/hellogrpc.proto
 ```
-也可以使用trpc编写客户端代码，请使用v0.4.1及以上trpc-go-cmdline生成客户端桩代码，参考example/client/tgrpc实现客户端。
+也可以使用 trpc 编写客户端代码，请使用 v0.4.1 及以上 trpc-go-cmdline 生成客户端桩代码，参考 example/client/tgrpc 实现客户端。
 
 
-14.使用grpc—stream方式
-详见example
+14.使用 grpc—stream 方式
+详见 example
 
 ## 问题说明
 

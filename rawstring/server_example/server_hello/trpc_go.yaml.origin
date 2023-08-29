@@ -1,0 +1,16 @@
+server:                                            # Server configuration.
+  service:                                         # The service provided by the business service can have multiple.
+    - name: trpc.cmd.helloworld.hellocmd           # Service route name.
+      ip: 127.0.0.1                                # The ip address that the service monitors, you can use the placeholder ${ip}, choose one of ip and nic, and give priority to ip.
+      port: 8000                                   # Service listening port, placeholder ${port} can be used.
+      network: tcp                                 # Network monitoring type, tcp or udp.
+      protocol: rawstring                                # Application layer protocol, trpc or http.
+      timeout: 1000                                # The maximum processing time of the request, in milliseconds.
+      idletime: 300000                             # Connection idle time, in milliseconds.
+    - name: trpc.cmd.helloworld.hellocmd1           # Service route name.
+      ip: 127.0.0.1                                # The ip address that the service monitors, you can use the placeholder ${ip}, choose one of ip and nic, and give priority to ip.
+      port: 8001                                   # Service listening port, placeholder ${port} can be used.
+      network: tcp                                 # Network monitoring type, tcp or udp.
+      protocol: rawstring                                # Application layer protocol, trpc or http.
+      timeout: 1000                                # The maximum processing time of the request, in milliseconds.
+      idletime: 300000                             # Connection idle time, in milliseconds.
