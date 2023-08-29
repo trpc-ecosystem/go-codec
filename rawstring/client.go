@@ -24,7 +24,7 @@ type rawstingCli struct {
 	opts   []client.Option
 }
 
-// NewClientProxy 新建一个rawstingCli代理
+// NewClientProxy 新建一个 rawstingCli 代理
 func NewClientProxy(opts ...client.Option) Client {
 	c := &rawstingCli{
 		Client: client.DefaultClient,

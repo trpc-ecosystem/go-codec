@@ -24,17 +24,17 @@ func init() {
 // DefaultClientTransport 默认的客户端通讯层
 var DefaultClientTransport = &clientTransport{}
 
-// clientTransport 实现了trpc-go的transport.ClientTransport接口，使用原生grpc通讯层替代trpc-go通讯层
+// clientTransport 实现了 trpc-go 的 transport.ClientTransport 接口，使用原生 grpc 通讯层替代 trpc-go 通讯层
 type clientTransport struct {
 	connectionPool pool
 	streamClient   grpc.ClientStream
 	streamDesc     *RegisterStreamsInfo
 }
 
-// RoundTrip 是实现transport.ClientTransport的方法，调用原生grpc客户端代码
+// RoundTrip 是实现 transport.ClientTransport 的方法，调用原生 grpc 客户端代码
 func (c *clientTransport) RoundTrip(ctx context.Context, req []byte,
 	roundTripOpts ...transport.RoundTripOption) (rsp []byte, err error) {
-	// 从ctx中获取grpc Header，用来获取请求和设置响应
+	// 从 ctx 中获取 grpc Header，用来获取请求和设置响应
 	header, ok := ctx.Value(ContextKeyHeader).(*Header)
 	if !ok {
 		return nil, errs.NewFrameError(errs.RetClientValidateFail,
@@ -45,7 +45,7 @@ func (c *clientTransport) RoundTrip(ctx context.Context, req []byte,
 	// 默认值
 	opts := &transport.RoundTripOptions{}
 
-	// 将传入的func option写到opts字段中
+	// 将传入的 func option 写到 opts 字段中
 	for _, o := range roundTripOpts {
 		o(opts)
 	}
@@ -53,42 +53,42 @@ func (c *clientTransport) RoundTrip(ctx context.Context, req []byte,
 	msg := codec.Message(ctx)
 	// 获取超时设置
 	timeout := msg.RequestTimeout()
-	// 从ctx中获取metadata并调用grpc方法设置客户端metadata
+	// 从 ctx 中获取 metadata 并调用 grpc 方法设置客户端 metadata
 	ctx, err = setGRPCMetadata(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
 
-	// 从服务器获取metadata
+	// 从服务器获取 metadata
 	md := &metadata.MD{}
 	var callOpts []grpc.CallOption
 	callOpts = append(callOpts, grpc.Header(md))
 
-	// 从连接池获取grpc连接
+	// 从连接池获取 grpc 连接
 	conn, err := c.connectionPool.Get(opts.Address, timeout)
 	if err != nil {
 		return nil, errs.NewFrameError(errs.RetClientConnectFail, err.Error())
 	}
-	// 使用grpc客户端调用远端服务器方法
+	// 使用 grpc 客户端调用远端服务器方法
 	if err = conn.Invoke(ctx, msg.ClientRPCName(),
 		reqbody, rspbody, callOpts...); err != nil {
 		return nil, fmt.Errorf("grpc invoke failed. err: %v", err)
 	}
 
-	// 将服务器的metadata写入ctx，使上层能够获取
+	// 将服务器的 metadata 写入 ctx，使上层能够获取
 	header.InMetadata = *md
 
 	return nil, nil
 }
 
-// setGRPCMetadata 将grpc的Header信息塞入到 metadata中
+// setGRPCMetadata 将 grpc 的 Header 信息塞入到 metadata 中
 func setGRPCMetadata(ctx context.Context, msg codec.Msg) (context.Context, error) {
 	header, ok := ctx.Value(ContextKeyHeader).(*Header)
 	if !ok {
 		return nil, errs.NewFrameError(errs.RetClientValidateFail,
 			fmt.Sprintf("grpc header disappeared when set md, code error"))
 	}
-	// 将grpc md设置到ctx，供发送端使用
+	// 将 grpc md 设置到 ctx，供发送端使用
 	var kv []string
 	for k, vals := range header.OutMetadata {
 		for _, v := range vals {

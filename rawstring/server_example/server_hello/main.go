@@ -70,7 +70,7 @@ func main() {
 	log.Println("finish succ")
 }
 
-// helloworldServer 测试server
+// helloworldServer 测试 server
 type helloworldServer struct{}
 
 // ServiceName service name
@@ -85,7 +85,7 @@ func (s *helloworldServer) Handle(ctx context.Context, req []byte) ([]byte, erro
 	return rsp, nil
 }
 
-// helloworldServer2 测试server
+// helloworldServer2 测试 server
 type helloworldServer2 struct{}
 
 // ServiceName service name

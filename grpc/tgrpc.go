@@ -4,7 +4,7 @@
 // please note that tRPC source code is licensed under the Apache 2.0 License,
 // A copy of the Apache 2.0 License is included in this file.
 
-// Package grpc tRPC-Go grpc协议
+// Package grpc tRPC-Go grpc 协议
 package grpc
 
 import (
@@ -33,8 +33,8 @@ type GrpcToTrpcLayer struct {
 	Handler transport.Handler
 }
 
-// Handle req和resp通过ctx传入trpc-go，在生成的stub里从ctx获取req和写入resp，无需反复序列化
-// 从GrpcRegisterInfoMap获取方法输入输出类型仍不可缺少，如果可以将这块代码放到stub里，则不需要记录输入输出类型
+// Handle req 和 resp 通过 ctx 传入 trpc-go，在生成的 stub 里从 ctx 获取 req 和写入 resp，无需反复序列化
+// 从 GrpcRegisterInfoMap 获取方法输入输出类型仍不可缺少，如果可以将这块代码放到 stub 里，则不需要记录输入输出类型
 func (g *GrpcToTrpcLayer) Handle(srv interface{}, ctx context.Context, dec func(interface{}) error,
 	_ grpc.UnaryServerInterceptor) (out interface{}, err error) {
 	method, _ := grpc.Method(ctx)
@@ -100,7 +100,7 @@ func (g *GrpcToTrpcLayer) Handle(srv interface{}, ctx context.Context, dec func(
 	return grpcData.Rsp, nil
 }
 
-// StreamHandler 封装trpc.Handler 为 grpcHandler
+// StreamHandler 封装 trpc.Handler 为 grpcHandler
 func StreamHandler(srv interface{}, s grpc.ServerStream) error {
 	ctx := s.Context()
 	method, _ := grpc.Method(ctx)
@@ -130,7 +130,7 @@ func StreamHandler(srv interface{}, s grpc.ServerStream) error {
 	return desc.Handler(srv, s)
 }
 
-// makeGrpcDesc 将stream.ClientStreamDesc 映射为 grpc.StreamDesc
+// makeGrpcDesc 将 stream.ClientStreamDesc 映射为 grpc.StreamDesc
 func makeGrpcDesc(desc *client.ClientStreamDesc) *grpc.StreamDesc {
 	grpcDesc := &grpc.StreamDesc{
 		StreamName:    desc.StreamName,

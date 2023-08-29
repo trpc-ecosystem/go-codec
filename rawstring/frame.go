@@ -22,10 +22,10 @@ var (
 	DefaultFramerBuilder = &FramerBuilder{}
 )
 
-// FramerBuilder cmd数据帧构造器
+// FramerBuilder cmd 数据帧构造器
 type FramerBuilder struct{}
 
-// New 生成一个cmd数据帧
+// New 生成一个 cmd 数据帧
 func (fd *FramerBuilder) New(reader io.Reader) transport.Framer {
 	return &framer{
 		reader: reader,

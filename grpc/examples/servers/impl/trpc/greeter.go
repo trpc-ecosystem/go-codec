@@ -18,13 +18,13 @@ import (
 // Greeter struct
 type Greeter struct{}
 
-// Hello 实现hello接口
+// Hello 实现 hello 接口
 func (*Greeter) Hello(ctx context.Context, req *common.HelloReq, rsp *common.HelloRsp) error {
-	// 获取客户端发送的metadata
+	// 获取客户端发送的 metadata
 	md := tgrpc.ParseGRPCMetadata(ctx)
 	log.Printf("get md: %v\n", md)
 	rsp.Msg = "Welcome " + req.Msg
-	// 设置服务端metadata
+	// 设置服务端 metadata
 	for k, v := range md {
 		tgrpc.WithServerGRPCMetadata(ctx, k, append(v, "value_from_server"))
 	}

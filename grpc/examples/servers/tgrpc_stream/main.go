@@ -4,7 +4,7 @@
 // please note that tRPC source code is licensed under the Apache 2.0 License,
 // A copy of the Apache 2.0 License is included in this file.
 
-// Package main gRPC协议的tRPC流式服务
+// Package main gRPC 协议的 tRPC 流式服务
 package main
 
 import (

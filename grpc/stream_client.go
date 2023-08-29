@@ -16,10 +16,10 @@ import (
 	"trpc.group/trpc-go/trpc-go/transport"
 )
 
-// DefaultStreamClient 生成新的StreamClient
+// DefaultStreamClient 生成新的 StreamClient
 var DefaultStreamClient = NewStreamClient()
 
-// NewStreamClient  生成新的StreamClient
+// NewStreamClient  生成新的 StreamClient
 func NewStreamClient() stream.Client {
 	return &StreamClient{}
 }
@@ -29,7 +29,7 @@ type StreamClient struct {
 	connectionPool pool
 }
 
-// NewStream 生成streamConn并存储
+// NewStream 生成 streamConn 并存储
 func (s *StreamClient) NewStream(ctx context.Context, desc *client.ClientStreamDesc, method string,
 	opt ...client.Option) (client.ClientStream, error) {
 	cs := &clientStream{}
@@ -40,13 +40,13 @@ func (s *StreamClient) NewStream(ctx context.Context, desc *client.ClientStreamD
 	if err != nil {
 		return nil, err
 	}
-	// 根据寻址选择器寻址到后端节点node
+	// 根据寻址选择器寻址到后端节点 node
 	if _, err = selectNode(msg, opts, address); err != nil {
 		return nil, err
 	}
 	updateMsg(msg, opts)
 	roundTripOpts := &transport.RoundTripOptions{}
-	// 将传入的 call option 写到opts字段中
+	// 将传入的 call option 写到 opts 字段中
 	for _, o := range opts.CallOptions {
 		o(roundTripOpts)
 	}
@@ -69,23 +69,23 @@ type clientStream struct {
 	stream grpc.ClientStream
 }
 
-// RecvMsg 接收消息，返回error
+// RecvMsg 接收消息，返回 error
 func (cs *clientStream) RecvMsg(m interface{}) error {
 	return cs.stream.RecvMsg(m)
 }
 
-// SendMsg  接收消息，返回error
+// SendMsg  接收消息，返回 error
 func (cs *clientStream) SendMsg(m interface{}) error {
 	return cs.stream.SendMsg(m)
 
 }
 
-// CloseSend 关闭发送那端，返回error
+// CloseSend 关闭发送那端，返回 error
 func (cs *clientStream) CloseSend() error {
 	return cs.stream.CloseSend()
 }
 
-// Context 返回Context
+// Context 返回 Context
 func (cs *clientStream) Context() context.Context {
 	return cs.ctx
 }

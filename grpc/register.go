@@ -34,11 +34,11 @@ type RegisterStreamsInfo struct {
 }
 
 var (
-	// grpcRegisterInfo： 记录注册的信息
+	// grpcRegisterInfo：记录注册的信息
 	grpcRegisterInfo = make(map[string]*RegisterInfo)
 )
 
-// Register 用于静态注册grpc service 的所有对外路由，以及返回类型的映射
+// Register 用于静态注册 grpc service 的所有对外路由，以及返回类型的映射
 func Register(serviceName string, metadata string, methodInfos []RegisterMethodsInfo) error {
 	registerInfo, ok := grpcRegisterInfo[serviceName]
 	if !ok {
@@ -60,8 +60,8 @@ func Register(serviceName string, metadata string, methodInfos []RegisterMethods
 	return nil
 }
 
-// RegisterStream 注册grpc stream描述信息
-// 保留前面RegisterMethod方法,后续可以收归到一起
+// RegisterStream 注册 grpc stream 描述信息
+// 保留前面 RegisterMethod 方法，后续可以收归到一起
 func RegisterStream(serviceName, metadata string, streamInfos []server.StreamDesc,
 	svr interface{}, handlerType interface{}) error {
 	registerInfo, ok := grpcRegisterInfo[serviceName]

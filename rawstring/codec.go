@@ -14,7 +14,7 @@ func init() {
 	codec.Register("rawstring", &serverCodec{}, &clientCodec{})
 }
 
-// serverCodec Server端解码器
+// serverCodec Server 端解码器
 type serverCodec struct{}
 
 // Decode 获取二进制请求数据
@@ -27,7 +27,7 @@ func (sc *serverCodec) Encode(msg codec.Msg, rsp []byte) ([]byte, error) {
 	return rsp, nil
 }
 
-// serverCodec Client端解码器
+// serverCodec Client 端解码器
 type clientCodec struct{}
 
 // Encode 打包二进制请求数据
