@@ -14,43 +14,43 @@
 package rawbinary
 
 import (
-    "bytes"
-    "testing"
+	"bytes"
+	"testing"
 
-    "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 var mockClientCodec = &clientCodec{}
 var mockServerCodec = &serverCodec{}
 
 func Test_clientCodec_Decode(t *testing.T) {
-    rsp, err := mockClientCodec.Decode(nil, []byte("mock"))
-    assert.Nil(t, err)
-    assert.Equal(t, rsp, []byte("mock"))
+	rsp, err := mockClientCodec.Decode(nil, []byte("mock"))
+	assert.Nil(t, err)
+	assert.Equal(t, rsp, []byte("mock"))
 }
 
 func Test_clientCodec_Encode(t *testing.T) {
-    rsp, err := mockClientCodec.Encode(nil, []byte("mock"))
-    assert.Nil(t, err)
-    assert.Equal(t, rsp, []byte("mock"))
+	rsp, err := mockClientCodec.Encode(nil, []byte("mock"))
+	assert.Nil(t, err)
+	assert.Equal(t, rsp, []byte("mock"))
 }
 
 func Test_serverCodec_Decode(t *testing.T) {
-    rsp, err := mockServerCodec.Decode(nil, []byte("mock"))
-    assert.Nil(t, err)
-    assert.Equal(t, rsp, []byte("mock"))
+	rsp, err := mockServerCodec.Decode(nil, []byte("mock"))
+	assert.Nil(t, err)
+	assert.Equal(t, rsp, []byte("mock"))
 }
 
 func Test_serverCodec_Encode(t *testing.T) {
-    rsp, err := mockServerCodec.Encode(nil, []byte("mock"))
-    assert.Nil(t, err)
-    assert.Equal(t, rsp, []byte("mock"))
+	rsp, err := mockServerCodec.Encode(nil, []byte("mock"))
+	assert.Nil(t, err)
+	assert.Equal(t, rsp, []byte("mock"))
 }
 
 func Test_ReadFrame(t *testing.T) {
-    buf := []byte("mock")
-    f := DefaultFrameBuilder.New(bytes.NewReader(buf))
-    got, err := f.ReadFrame()
-    assert.Nil(t, err)
-    assert.Equal(t, got, buf)
+	buf := []byte("mock")
+	f := DefaultFrameBuilder.New(bytes.NewReader(buf))
+	got, err := f.ReadFrame()
+	assert.Nil(t, err)
+	assert.Equal(t, got, buf)
 }

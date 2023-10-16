@@ -14,11 +14,11 @@
 package rawstring
 
 import (
-    "trpc.group/trpc-go/trpc-go/codec"
+	"trpc.group/trpc-go/trpc-go/codec"
 )
 
 func init() {
-    codec.Register("rawstring", &serverCodec{}, &clientCodec{})
+	codec.Register("rawstring", &serverCodec{}, &clientCodec{})
 }
 
 // serverCodec Server 端解码器
@@ -26,12 +26,12 @@ type serverCodec struct{}
 
 // Decode 获取二进制请求数据
 func (sc *serverCodec) Decode(msg codec.Msg, req []byte) ([]byte, error) {
-    return req, nil
+	return req, nil
 }
 
 // Encode 回包二进制响应数据
 func (sc *serverCodec) Encode(msg codec.Msg, rsp []byte) ([]byte, error) {
-    return rsp, nil
+	return rsp, nil
 }
 
 // serverCodec Client 端解码器
@@ -39,13 +39,13 @@ type clientCodec struct{}
 
 // Encode 打包二进制请求数据
 func (cc *clientCodec) Encode(msg codec.Msg, reqBody []byte) ([]byte, error) {
-    reqstr := string(reqBody)
-    reqstr += "\n"
-    data := []byte(reqstr)
-    return data, nil
+	reqstr := string(reqBody)
+	reqstr += "\n"
+	data := []byte(reqstr)
+	return data, nil
 }
 
 // Decode 解析二进制响应数据
 func (cc *clientCodec) Decode(msg codec.Msg, rspBody []byte) ([]byte, error) {
-    return rspBody, nil
+	return rspBody, nil
 }

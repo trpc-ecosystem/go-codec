@@ -14,22 +14,22 @@
 package rawstring
 
 import (
-    "bytes"
-    "testing"
+	"bytes"
+	"testing"
 
-    "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFramerBuilder_New(t *testing.T) {
-    var b []byte
-    f := DefaultFramerBuilder.New(bytes.NewReader(b))
-    assert.NotNil(t, f)
+	var b []byte
+	f := DefaultFramerBuilder.New(bytes.NewReader(b))
+	assert.NotNil(t, f)
 }
 
 func TestFramer_ReadFrame(t *testing.T) {
-    b := []byte("hello\n")
-    f := DefaultFramerBuilder.New(bytes.NewReader(b))
-    msg, err := f.ReadFrame()
-    assert.Nil(t, err)
-    assert.Equal(t, b, msg)
+	b := []byte("hello\n")
+	f := DefaultFramerBuilder.New(bytes.NewReader(b))
+	msg, err := f.ReadFrame()
+	assert.Nil(t, err)
+	assert.Equal(t, b, msg)
 }

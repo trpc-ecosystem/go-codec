@@ -15,15 +15,15 @@
 package rawbinary
 
 import (
-    "io"
+	"io"
 
-    "trpc.group/trpc-go/trpc-go/codec"
-    "trpc.group/trpc-go/trpc-go/transport"
+	"trpc.group/trpc-go/trpc-go/codec"
+	"trpc.group/trpc-go/trpc-go/transport"
 )
 
 func init() {
-    codec.Register("rawbinary", &serverCodec{}, &clientCodec{})
-    transport.RegisterFramerBuilder("rawbinary", DefaultFrameBuilder)
+	codec.Register("rawbinary", &serverCodec{}, &clientCodec{})
+	transport.RegisterFramerBuilder("rawbinary", DefaultFrameBuilder)
 }
 
 // DefaultFrameBuilder is a default data frame constructor.
@@ -35,19 +35,19 @@ type FrameBuilder struct {
 
 // New generates a dataframe.
 func (fb *FrameBuilder) New(reader io.Reader) transport.Framer {
-    return &framer{
-        reader: reader,
-    }
+	return &framer{
+		reader: reader,
+	}
 }
 
 // framer is a dataframe.
 type framer struct {
-    reader io.Reader
+	reader io.Reader
 }
 
 // ReadFrame reads out the full data frame.
 func (f *framer) ReadFrame() ([]byte, error) {
-    return io.ReadAll(f.reader)
+	return io.ReadAll(f.reader)
 }
 
 // serverCodec is a server-side decoder.
@@ -55,12 +55,12 @@ type serverCodec struct{}
 
 // Decode gets binary request data.
 func (sc *serverCodec) Decode(msg codec.Msg, req []byte) ([]byte, error) {
-    return req, nil
+	return req, nil
 }
 
 // Encode returns binary response data.
 func (sc *serverCodec) Encode(msg codec.Msg, rsp []byte) ([]byte, error) {
-    return rsp, nil
+	return rsp, nil
 }
 
 // serverCodec is a client decoder.
@@ -68,10 +68,10 @@ type clientCodec struct{}
 
 // Encode packs binary request data.
 func (cc *clientCodec) Encode(msg codec.Msg, reqBody []byte) ([]byte, error) {
-    return reqBody, nil
+	return reqBody, nil
 }
 
 // Decode parses binary response data.
 func (cc *clientCodec) Decode(msg codec.Msg, rspBody []byte) ([]byte, error) {
-    return rspBody, nil
+	return rspBody, nil
 }

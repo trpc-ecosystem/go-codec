@@ -14,39 +14,39 @@
 package rawstring
 
 import (
-    "context"
-    "testing"
+	"context"
+	"testing"
 
-    "github.com/stretchr/testify/assert"
-    "trpc.group/trpc-go/trpc-go"
-    "trpc.group/trpc-go/trpc-go/filter"
-    "trpc.group/trpc-go/trpc-go/server"
+	"github.com/stretchr/testify/assert"
+	"trpc.group/trpc-go/trpc-go"
+	"trpc.group/trpc-go/trpc-go/filter"
+	"trpc.group/trpc-go/trpc-go/server"
 )
 
 type mockRawStringServer struct{}
 
 func (s *mockRawStringServer) ServiceName() string {
-    return "trpc.rawstring.mock.Mock"
+	return "trpc.rawstring.mock.Mock"
 }
 
 func (s *mockRawStringServer) Handle(ctx context.Context, req []byte) ([]byte, error) {
-    rsp := make([]byte, len(req))
-    copy(rsp, req)
-    return rsp, nil
+	rsp := make([]byte, len(req))
+	copy(rsp, req)
+	return rsp, nil
 }
 
 func TestHandler(t *testing.T) {
-    _, err := Handler(&mockRawStringServer{}, trpc.BackgroundContext(), func(_ interface{}) (filter.ServerChain, error) {
-        return nil, nil
-    })
+	_, err := Handler(&mockRawStringServer{}, trpc.BackgroundContext(), func(_ interface{}) (filter.ServerChain, error) {
+		return nil, nil
+	})
 
-    assert.Nil(t, err)
+	assert.Nil(t, err)
 }
 
 func TestRegister(t *testing.T) {
-    svc := server.New(server.WithProtocol("rawstring"))
-    s := &server.Server{}
-    s.AddService("trpc.rawstring.mock.Mock", svc)
-    err := Register(s, &mockRawStringServer{})
-    assert.Nil(t, err)
+	svc := server.New(server.WithProtocol("rawstring"))
+	s := &server.Server{}
+	s.AddService("trpc.rawstring.mock.Mock", svc)
+	err := Register(s, &mockRawStringServer{})
+	assert.Nil(t, err)
 }
