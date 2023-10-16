@@ -6,7 +6,7 @@ replace trpc.group/trpc-go/trpc-codec/grpc => ../../../../grpc
 
 require (
 	google.golang.org/grpc v1.44.0
-	google.golang.org/protobuf v1.27.1
+	google.golang.org/protobuf v1.30.0
 	trpc.group/trpc-go/trpc-codec/grpc v0.0.1
 )
 
