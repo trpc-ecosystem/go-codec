@@ -7,7 +7,7 @@ require (
 	github.com/stretchr/testify v1.8.0
 	google.golang.org/grpc v1.44.0
 	google.golang.org/protobuf v1.30.0
-	trpc.group/trpc-go/trpc-go v0.0.0-20230919115157-95737ac0b3e8
+	trpc.group/trpc-go/trpc-go v1.0.0
 )
 
 require (

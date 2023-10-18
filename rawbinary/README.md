@@ -1,7 +1,8 @@
-# Rawbinary protocol
+English | [中文](README.zh_CN.md)
 
-# The native binary protocol does not perform any processing on the protocol, and provides raw []byte requests and responses.
+# rawbinary 
 
+The native binary protocol does not perform any processing on the protocol, and provides raw []byte requests and responses.
 
 ## Example
 

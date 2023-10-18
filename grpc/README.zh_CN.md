@@ -1,7 +1,6 @@
 # tRPC-Go grpc 协议
 tRPC-Go 框架通过包引入和 grpc server 的封装，来达到支持 grpc 协议的目的。它通过 grpc server transport 和编解码来支持 grpc server 处理 grpc client 的请求。
 
-
 ## 快速开始
 
 以下是通过示例 demo 的创建，演示使用流程。
@@ -14,13 +13,13 @@ tRPC-Go 框架通过包引入和 grpc server 的封装，来达到支持 grpc �
 
 #### 准备工作
 
-1. 具备 golang 编译环境（golang 1.11 以上版本）的环境。
+1. 具备 golang 编译环境
 4. [安装 trpc 工具](https://trpc.group/trpc-go/trpc-go-cmdline)
 5. [安装 grpc_cli 工具](https://grpc.github.io/grpc/core/md_doc_command_line_tool.html)
 
 #### 开始
 
-1. clone 工程：`git clone "http://trpc.group/trpc-go/trpc-codec.git"`
+1. clone 工程：`git clone git@github.com:trpc-ecosystem/go-codec.git`
 
 2. `cd trpc-codec/grpc/examples`
 
@@ -54,7 +53,6 @@ service Greeter {
     > **注意 proto 中的 package 以及 go_package 的定义。**
 
 6. 通过命令行生成服务模型：`trpc create --protocol=grpc --protofile=protocol/hellogrpc.proto --output .`。
-！！！注意：请使用 v0.3.17 及以后版本的 trpc 命令行工具，以开启 grpc 协议支持，若要使用 trpc 库实现 grpc 客户端，请使用 v0.4.1 及以后版本的 trpc 命令行工具。
 7. 为了方便测试，替换远程协议成本地 `go mod edit -replace=trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol=./stub/trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol`
 
 8. 编写业务逻辑：
@@ -133,7 +131,6 @@ service Greeter {
     grpc.reflection.v1alpha.ServerReflection
     trpc.test.hellogrpc.Greeter
     ```
-    ```
     # 查看 Greeter 服务的详细信息
     $ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter -l
     filename: hellogrpc.proto
@@ -143,11 +140,9 @@ service Greeter {
       rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
     }
     ```
-    ```
     # 查看 Greeter.SayHi 方法的详细信息
     $ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter.SayHi -l
     rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
-    ```
     ```
     # 调试 Greeter.SayHi 接口
     $ grpc_cli call localhost:8000 'trpc.test.hellogrpc.Greeter.SayHi' "msg: 'I am a test.'"
@@ -158,17 +153,14 @@ service Greeter {
 13. 编写客户端代码
 使用 grpc-go 生成的客户端代码。
 ```
-# 生成grpc-go的客户端代码
+# 生成 grpc-go 的客户端代码
 $ protoc --go_out=plugins=grpc:. protocol/hellogrpc.proto
 ```
-也可以使用 trpc 编写客户端代码，请使用 v0.4.1 及以上 trpc-go-cmdline 生成客户端桩代码，参考 example/client/tgrpc 实现客户端。
 
-
-14.使用 grpc—stream 方式
+14. 使用 grpc—stream 方式
 详见 example
 
 ## 问题说明
-
 
 ## 相关参考
 
@@ -176,4 +168,3 @@ $ protoc --go_out=plugins=grpc:. protocol/hellogrpc.proto
 [http2 frame](https://http2.github.io/http2-spec/#FramingLayer)
 [grpc 协议解包过程全剖析](https://zhuanlan.zhihu.com/p/86075992)
 [grpc 协议编解码实现](https://zhuanlan.zhihu.com/p/85176945)
-
