@@ -6,19 +6,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.code.oa.com/trpc-go/trpc-codec/grpc"
-	tgrpc "git.code.oa.com/trpc-go/trpc-codec/grpc"
-	"git.code.oa.com/trpc-go/trpc-codec/grpc/testdata/protocols/common"
-	pb "git.code.oa.com/trpc-go/trpc-codec/grpc/testdata/protocols/tgrpc"
-	"git.code.oa.com/trpc-go/trpc-go"
-	"git.code.oa.com/trpc-go/trpc-go/codec"
-	"git.code.oa.com/trpc-go/trpc-go/log"
-	"git.code.oa.com/trpc-go/trpc-go/server"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"google.golang.org/grpc/metadata"
+	"trpc.group/trpc-go/trpc-codec/grpc"
+	tgrpc "trpc.group/trpc-go/trpc-codec/grpc"
+	"trpc.group/trpc-go/trpc-codec/grpc/testdata/protocols/common"
+	pb "trpc.group/trpc-go/trpc-codec/grpc/testdata/protocols/tgrpc"
+	"trpc.group/trpc-go/trpc-go"
+	"trpc.group/trpc-go/trpc-go/codec"
+	"trpc.group/trpc-go/trpc-go/log"
+	"trpc.group/trpc-go/trpc-go/server"
 )
 
 func main() {

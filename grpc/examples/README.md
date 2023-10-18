@@ -1,6 +1,6 @@
 ## Before running the sample code
 
-1. Install [trpc](https://git.woa.com/trpc-go/trpc-go-cmdline) tool, the version must be greater than v0.3.17.
+1. Install [trpc](https://github.com/trpc-group/trpc-cmdline) tool, the version must be greater than v0.3.17.
 2. Generate stub code: `cd ../testdata/protocols && make clean && make`.
 
 ## gRPC calls tRPC service

@@ -1,7 +1,6 @@
 # tRPC-Go grpc protocol
-[![BK Pipelines Status](https://api.bkdevops.qq.com/process/api/external/pipelines/projects/pcgtrpcproject/p-2c6a43f325d54e78a029f16198847db3/badge?X-DEVOPS-PROJECT-ID=pcgtrpcproject)](http://devops.oa.com:/ms/process/api-html/user/builds/projects/pcgtrpcproject/pipelines/p-2c6a43f325d54e78a029f16198847db3/latestFinished?X-DEVOPS-PROJECT-ID=pcgtrpcproject)  [![Coverage](https://tcoverage.woa.com/api/getCoverage/getTotalImg/?pipeline_id=p-2c6a43f325d54e78a029f16198847db3)](http://macaron.oa.com/api/coverage/getTotalLink/?pipeline_id=p-2c6a43f325d54e78a029f16198847db3) [![GoDoc](https://img.shields.io/badge/API%20Docs-GoDoc-green)](http://godoc.oa.com/git.code.oa.com/trpc-go/trpc-codec/grpc) 
-The tRPC-Go framework achieves the purpose of supporting the grpc protocol through package introduction and grpc server encapsulation. It supports grpc server to process grpc client requests through grpc server transport and codec.
 
+The tRPC-Go framework achieves the purpose of supporting the grpc protocol through package introduction and grpc server encapsulation. It supports grpc server to process grpc client requests through grpc server transport and codec.
 
 ## Quick start
 
@@ -9,25 +8,23 @@ The following is the creation of a sample demo to demonstrate the usage process.
 
 Suppose our current business project app is **test**, and the service server we want to develop is **hellogrpc**.
 
-The git project used is `http://git.woa.com/trpc-go/trpc-codec.git`, and this example is placed under the `grpc/examples` path under the project.
-
 During the operation, you can set your own app and server name, but you need to pay attention to the replacement of the corresponding fields in the subsequent steps.
 
 #### Preparation
 
-1. An environment with a golang compilation environment (golang 1.11 or later).
-4. [Install trpc tool](https://git.woa.com/trpc-go/trpc-go-cmdline)
+1. An environment with a golang compilation environment.
+4. [Install trpc tool](https://github.com/trpc-group/trpc-cmdline)
 5. [Install grpc_cli tool](https://grpc.github.io/grpc/core/md_doc_command_line_tool.html)
 
 #### Start
 
-1. clone project: `git clone "http://git.woa.com/trpc-go/trpc-codec.git"`
+1. clone project: `git clone git@github.com:trpc-ecosystem/go-codec.git`
 
 2. `cd trpc-codec/grpc/examples`
 
 3. `mkdir hellogrpc && cd hellogrpc && mkdir protocol`
 
-4.  init golang mod：`go mod init git.code.oa.com/trpc-go/trpc-codec/grpc/examples/hellogrpc`
+4.  init golang mod：`go mod init github.com/examples/hellogrpc`
 
 5. On the protocol path, write the service agreement file `vim protocol/hellogrpc.proto`：
 
@@ -52,11 +49,8 @@ service Greeter {
 }
 ```
 
-    > **Pay attention to the definition of package and go_package in proto, for details, please refer to [tRPC-Go Code of Conduct](https://iwiki.oa.tencent.com/pages/viewpage.action?pageId=99485634). **
-
 6. Generate a serving model via the command line: `trpc create --protocol=grpc --protofile=protocol/hellogrpc.proto --output .`.
-！！！Note: Please use the trpc command line tool of v0.3.17 and later versions to enable grpc protocol support. If you want to use the trpc library to implement the grpc client, please use the trpc command line tool of v0.4.1 and later versions.
-7. In order to facilitate testing, replace the remote protocol with local `go mod edit -replace=git.code.oa.com/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol=./stub/git.code.oa.com/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol`
+7. In order to facilitate testing, replace the remote protocol with local `go mod edit -replace=trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol=./stub/trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol`
 
 8. Write business logic:
 
@@ -66,7 +60,7 @@ service Greeter {
 
       ```
       // Import library files
-      import "git.code.oa.com/trpc-go/trpc-codec/grpc"
+      import "trpc.group/trpc-go/trpc-codec/grpc"
       ...
       func main() {
       
@@ -134,7 +128,6 @@ service Greeter {
     grpc.reflection.v1alpha.ServerReflection
     trpc.test.hellogrpc.Greeter
     ```
-    ```
     # View details of the Greeter service
     $ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter -l
     filename: hellogrpc.proto
@@ -144,11 +137,9 @@ service Greeter {
       rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
     }
     ```
-    ```
     # See the details of the Greeter.SayHi method
     $ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter.SayHi -l
     rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
-    ```
     ```
     # Debug Greeter.SayHi interface
     $ grpc_cli call localhost:8000 'trpc.test.hellogrpc.Greeter.SayHi' "msg: 'I am a test.'"
@@ -162,14 +153,11 @@ Client code generated using grpc-go.
 # Generate client code for grpc-go
 $ protoc --go_out=plugins=grpc:. protocol/hellogrpc.proto
 ```
-You can also use trpc to write client code, please use v0.4.1 and above trpc-go-cmdline to generate client stub code, refer to example/client/tgrpc to implement the client.
-
 
 14. Use the grpc-stream method
 See example for details
 
 ## Problem statement
-
 
 ## Related References
 
@@ -177,4 +165,3 @@ See example for details
 [http2 frame](https://http2.github.io/http2-spec/#FramingLayer)
 [Full analysis of grpc protocol unpacking process](https://zhuanlan.zhihu.com/p/86075992)
 [grpc protocol codec implementation](https://zhuanlan.zhihu.com/p/85176945)
-
