@@ -1,4 +1,12 @@
+[English](README.md) | 中文
+
 # tRPC-Go grpc 协议
+
+[![Go Reference](https://pkg.go.dev/badge/trpc.group/trpc-go/trpc-codec/grpc.svg)](https://pkg.go.dev/trpc.group/trpc-go/trpc-codec/grpc)
+[![Go Report Card](https://goreportcard.com/badge/trpc.group/trpc-go/trpc-codec/grpc)](https://goreportcard.com/report/trpc.group/trpc-go/trpc-codec/grpc)
+[![Tests](https://github.com/trpc-ecosystem/go-codec/actions/workflows/grpc.yml/badge.svg)](https://github.com/trpc-ecosystem/go-codec/actions/workflows/grpc.yml)
+[![Coverage](https://codecov.io/gh/trpc-ecosystem/go-codec/branch/main/graph/badge.svg?flag=grpc&precision=2)](https://app.codecov.io/gh/trpc-ecosystem/go-codec/tree/main/grpc)
+
 tRPC-Go 框架通过包引入和 grpc server 的封装，来达到支持 grpc 协议的目的。它通过 grpc server transport 和编解码来支持 grpc server 处理 grpc client 的请求。
 
 ## 快速开始

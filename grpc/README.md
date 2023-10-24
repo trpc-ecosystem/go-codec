@@ -1,4 +1,11 @@
+English | [中文](README.zh_CN.md)
+
 # tRPC-Go grpc protocol
+
+[![Go Reference](https://pkg.go.dev/badge/trpc.group/trpc-go/trpc-codec/grpc.svg)](https://pkg.go.dev/trpc.group/trpc-go/trpc-codec/grpc)
+[![Go Report Card](https://goreportcard.com/badge/trpc.group/trpc-go/trpc-codec/grpc)](https://goreportcard.com/report/trpc.group/trpc-go/trpc-codec/grpc)
+[![Tests](https://github.com/trpc-ecosystem/go-codec/actions/workflows/grpc.yml/badge.svg)](https://github.com/trpc-ecosystem/go-codec/actions/workflows/grpc.yml)
+[![Coverage](https://codecov.io/gh/trpc-ecosystem/go-codec/branch/main/graph/badge.svg?flag=grpc&precision=2)](https://app.codecov.io/gh/trpc-ecosystem/go-codec/tree/main/grpc)
 
 The tRPC-Go framework achieves the purpose of supporting the grpc protocol through package introduction and grpc server encapsulation. It supports grpc server to process grpc client requests through grpc server transport and codec.
 

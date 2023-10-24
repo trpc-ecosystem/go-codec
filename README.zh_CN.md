@@ -2,6 +2,8 @@
 
 # go-codec
 
+[![LICENSE](https://img.shields.io/badge/license-Apache--2.0-green.svg)](https://github.com/trpc-ecosystem/go-codec/blob/main/LICENSE)
+
 本仓库提供了部分业务协议的实现示例，目前包括：
 
 * grpc: 支持 grpc 协议
