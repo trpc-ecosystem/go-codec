@@ -21,5 +21,11 @@ jobs:
     - name: Build
       run: cd rawstring && go build -v ./...
     - name: Test
-      run: cd rawstring && go test -v -gcflags=all=-l ./...
-   
+      run: cd rawstring && go test -v -coverprofile=coverage.out ./...
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./rawstring/coverage.out
+        flags: rawstring
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

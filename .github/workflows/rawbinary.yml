@@ -21,5 +21,13 @@ jobs:
     - name: Build
       run: cd rawbinary && go build -v ./...
     - name: Test
-      run: cd rawbinary && go test -v -gcflags=all=-l ./...
+      run: cd rawbinary && go test -v -coverprofile=coverage.out ./...
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./rawbinary/coverage.out
+        flags: rawbinary
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+   
    
