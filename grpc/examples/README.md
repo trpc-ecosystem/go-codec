@@ -1,3 +1,5 @@
+English | [中文](README.zh_CN.md)
+
 ## Before running the sample code
 
 1. Install [trpc](https://github.com/trpc-group/trpc-cmdline) tool, the version must be greater than v0.3.17.

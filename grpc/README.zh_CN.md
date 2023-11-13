@@ -162,7 +162,7 @@ $ protoc --go_out=plugins=grpc:. protocol/hellogrpc.proto
 ```
 
 14. 使用 grpc—stream 方式
-详见 [examples](/examples/README.zh_CN.md)
+详见 [examples](./examples/README.zh_CN.md)
 
 ## 相关参考
 

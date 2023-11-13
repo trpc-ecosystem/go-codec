@@ -160,7 +160,7 @@ $ protoc --go_out=plugins=grpc:. protocol/hellogrpc.proto
 
 14. Use the grpc-stream method
 
-See [examples](/examples/README.md) for details
+See [examples](./examples/README.md) for details.
 
 ## Related References
 
