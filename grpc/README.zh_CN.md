@@ -65,114 +65,106 @@ service Greeter {
 
 8. 编写业务逻辑：
 
-    - 修改 `main.go`，添加 `trpc-grpc` package，并且在 main 函数中注册：
+- 修改 `main.go`，添加 `trpc-grpc` package，并且在 main 函数中注册：
 
-      > 后续会修改成 trpc 工具直接支持，暂时需要手动引入和注册
+> 后续会修改成 trpc 工具直接支持，暂时需要手动引入和注册
 
-      ```
-      //引入库文件
-      import "trpc.group/trpc-go/trpc-codec/grpc"
-      ...
-      func main() {
+```go
+// 引入库文件
+import "trpc.group/trpc-go/trpc-codec/grpc"
+...
+func main() {
+    s := trpc.NewServer()
       
-      	s := trpc.NewServer()
+    pb.RegisterGreeterService(s, &greeterServiceImpl{})
       
-      	pb.RegisterGreeterService(s, &greeterServiceImpl{})
+    s.Serve()
+}
+```
       
-      	s.Serve()
-      }
-      ```
-      
-    - 修改 service 接口 `greeter.go` 文件，形如：
+- 修改 service 接口 `greeter.go` 文件，形如：
 
-      ```
-      // Package main is the main package.
-      package main
+```go
+// Package main is the main package.
+package main
       
-      import (
-      	"context"
+import (
+    "context"
       
-      	pb "trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol"
-      )
+    pb "trpc.group/trpc-go/trpc-codec/grpc/examples/hellogrpc/protocol"
+)
       
-      // SayHello ...
-      func (s *greeterServiceImpl) SayHello(ctx context.Context, req *pb.HelloRequest, rsp *pb.HelloReply) error {
-      	// implement business logic here ...
-      	// 新增内容
-      	rsp.Msg = "hello grpc client: " + req.Msg
+// SayHello ...
+func (s *greeterServiceImpl) SayHello(ctx context.Context, req *pb.HelloRequest, rsp *pb.HelloReply) error {
+    // implement business logic here ...
+    // 新增内容
+    rsp.Msg = "hello grpc client: " + req.Msg
       
-      	return nil
-      }
+    return nil
+}
       
-      // SayHi ...
-      func (s *greeterServiceImpl) SayHi(ctx context.Context, req *pb.HelloRequest, rsp *pb.HelloReply) error {
-      	// implement business logic here ...
-      	// 新增内容
-      	rsp.Msg = "hi grpc client: " + req.Msg
+// SayHi ...
+func (s *greeterServiceImpl) SayHi(ctx context.Context, req *pb.HelloRequest, rsp *pb.HelloReply) error {
+    // implement business logic here ...
+    // 新增内容
+    rsp.Msg = "hi grpc client: " + req.Msg
       
-      	return nil
-      }
-      ```
+    return nil
+}
+```
 
 9. 编译：`go build`，将会生成 `hellogrpc` 的可执行文件。
 
 10. 修改当前路径下的启动配置 `trpc_go.yaml` 文件中的 `service` 下的 protocol 字段，从 `trpc` 修改为 `grpc`：
 
-  ```
-    service:                                         #业务服务提供的 service，可以有多个
-        - name: trpc.test.hellogrpc.Greeter      #service 的路由名称
-          ip: 127.0.0.1                            #服务监听 ip 地址 可使用占位符 ${ip},ip 和 nic 二选一，优先 ip
-          #nic: eth0
-          port: 8000                #服务监听端口 可使用占位符 ${port}
-          network: tcp                             #网络监听类型  tcp udp
-          protocol: grpc               #修改为 grpc
-          timeout: 1000                            #请求最长处理时间 单位 毫秒
-  ```
+```yaml
+  service:                                         #业务服务提供的 service，可以有多个
+      - name: trpc.test.hellogrpc.Greeter      #service 的路由名称
+        ip: 127.0.0.1                            #服务监听 ip 地址 可使用占位符 ${ip},ip 和 nic 二选一，优先 ip
+        #nic: eth0
+        port: 8000                #服务监听端口 可使用占位符 ${port}
+        network: tcp                             #网络监听类型  tcp udp
+        protocol: grpc               #修改为 grpc
+        timeout: 1000                            #请求最长处理时间 单位 毫秒
+```
 
 11. 启动服务：`./hellogrpc &`
 
 12. 使用 grpc-cli 执行测试：
 
-    ```
-    # 查看服务
-    $ grpc_cli ls localhost:8000
-    grpc.reflection.v1alpha.ServerReflection
-    trpc.test.hellogrpc.Greeter
-    ```
-    # 查看 Greeter 服务的详细信息
-    $ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter -l
-    filename: hellogrpc.proto
-    package: trpc.test.hellogrpc;
-    service Greeter {
-      rpc SayHello(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
-      rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
-    }
-    ```
-    # 查看 Greeter.SayHi 方法的详细信息
-    $ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter.SayHi -l
-    rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
-    ```
-    # 调试 Greeter.SayHi 接口
-    $ grpc_cli call localhost:8000 'trpc.test.hellogrpc.Greeter.SayHi' "msg: 'I am a test.'"
-    msg: "hi grpc client: I am a test."
-    Rpc succeeded with OK status
-    ```
+```shell
+# 查看服务
+$ grpc_cli ls localhost:8000
+grpc.reflection.v1alpha.ServerReflection
+trpc.test.hellogrpc.Greeter
+# 查看 Greeter 服务的详细信息
+$ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter -l
+filename: hellogrpc.proto
+package: trpc.test.hellogrpc;
+service Greeter {
+  rpc SayHello(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
+  rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
+}
+# 查看 Greeter.SayHi 方法的详细信息
+$ grpc_cli ls localhost:8000 trpc.test.hellogrpc.Greeter.SayHi -l
+rpc SayHi(trpc.test.hellogrpc.HelloRequest) returns (trpc.test.hellogrpc.HelloReply) {}
+# 调试 Greeter.SayHi 接口
+$ grpc_cli call localhost:8000 'trpc.test.hellogrpc.Greeter.SayHi' "msg: 'I am a test.'"
+msg: "hi grpc client: I am a test."
+Rpc succeeded with OK status
+```
 
 13. 编写客户端代码
 使用 grpc-go 生成的客户端代码。
-```
+```shell
 # 生成 grpc-go 的客户端代码
 $ protoc --go_out=plugins=grpc:. protocol/hellogrpc.proto
 ```
 
 14. 使用 grpc—stream 方式
-详见 example
-
-## 问题说明
+详见 [examples](/examples/README.zh_CN.md)
 
 ## 相关参考
 
 [grpc protocol](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md)
 [http2 frame](https://http2.github.io/http2-spec/#FramingLayer)
-[grpc 协议解包过程全剖析](https://zhuanlan.zhihu.com/p/86075992)
-[grpc 协议编解码实现](https://zhuanlan.zhihu.com/p/85176945)
