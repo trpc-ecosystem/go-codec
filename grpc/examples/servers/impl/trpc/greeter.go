@@ -11,7 +11,7 @@
 //
 //
 
-// Package trpc 实现接口
+// Package trpc implements the interface.
 package trpc
 
 import (
