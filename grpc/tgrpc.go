@@ -11,7 +11,7 @@
 //
 //
 
-// Package grpc tRPC-Go grpc 协议
+// Package grpc tRPC-Go grpc protocol
 package grpc
 
 import (
@@ -27,6 +27,7 @@ import (
 	"trpc.group/trpc-go/trpc-go/codec"
 	"trpc.group/trpc-go/trpc-go/errs"
 	"trpc.group/trpc-go/trpc-go/transport"
+	trpcpb "trpc.group/trpc/trpc-protocol/pb/go/trpc"
 )
 
 // GrpcToTrpcer is an interface to represent handler of grpc server.
@@ -98,7 +99,7 @@ func (g *GrpcToTrpcLayer) Handle(srv interface{}, ctx context.Context, dec func(
 	if _, err := g.Handler.Handle(innerCtx, reqbuffer); err != nil {
 		return nil, err
 	}
-	if err := msg.ServerRspErr(); err != nil && err.Code != errs.RetOK {
+	if err := msg.ServerRspErr(); err != nil && err.Code != trpcpb.TrpcRetCode_TRPC_INVOKE_SUCCESS {
 		return nil, err
 	}
 	// send md

@@ -7,11 +7,11 @@
 package greeter
 
 import (
-	common "trpc.group/trpc-go/trpc-codec/grpc/testdata/protocols/common"
 	proto "github.com/golang/protobuf/proto"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	common "trpc.group/trpc-go/trpc-codec/grpc/testdata/protocols/common"
 )
 
 const (
